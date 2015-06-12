@@ -53,6 +53,11 @@ public class MainActivity extends ActionBarActivity {
             Log.i("Articles", "starting download Task");
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
+            mAdapter = new ArticleAdapter(MainActivity.this, -1, YTXmlPullParser.getArticlesFromFile(MainActivity.this));
+            artList.setAdapter(mAdapter);
+
+            Log.e("Articless", "adapter size = " + mAdapter.getCount());
+            onSelection();
 
         } else {
 
@@ -97,9 +102,7 @@ public class MainActivity extends ActionBarActivity {
 //
 //        return super.onOptionsItemSelected(item);
 //    }
-    public void SelectArticle(){
 
-    }
     public void onSelection(){
         artList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> mAdapter, View view, int position, long arg3){
@@ -144,11 +147,9 @@ public class MainActivity extends ActionBarActivity {
         {
 
             //setup our Adapter and set it to the ListView.
-            mAdapter = new ArticleAdapter(MainActivity.this, -1, YTXmlPullParser.getArticlesFromFile(MainActivity.this));
-            artList.setAdapter(mAdapter);
 
-            Log.e("Articless", "adapter size = " + mAdapter.getCount());
             }
+
         ;}
 
         public void goToArticle(String description){
