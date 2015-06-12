@@ -53,7 +53,10 @@ public class MainActivity extends ActionBarActivity {
             Log.i("Articles", "starting download Task");
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
-            mAdapter = new ArticleAdapter(MainActivity.this, -1, YTXmlPullParser.getArticlesFromFile(MainActivity.this));
+            List<articleInf> articles = new ArrayList();
+            articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+           articles = formatDate(articles);
+            mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
             artList.setAdapter(mAdapter);
 
             Log.e("Articless", "adapter size = " + mAdapter.getCount());
@@ -85,9 +88,6 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-
-
 
 
 //  *Optional override stated in the tutorial not sure if this is needed, may be useful later on(look it up at some point)*
@@ -122,6 +122,18 @@ public class MainActivity extends ActionBarActivity {
 
 
 
+    }
+
+
+    public List<articleInf> formatDate(List<articleInf> articles){
+
+        String temp;
+        for(int i = 0; i < articles.size();i++){
+            temp = articles.get(i).getPubDate();
+            temp = temp.substring(0,16);
+            articles.get(i).setPubDate(temp);
+        }
+        return articles;
     }
     private class articleDownloadTask extends AsyncTask<Void, Void, Void> {
 
