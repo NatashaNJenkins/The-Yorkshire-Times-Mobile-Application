@@ -1,6 +1,7 @@
 package com.bradford.pisoc.theyorkshiretimes;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 
 
 public class DisplayArticle extends ActionBarActivity {
-
+String link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,7 @@ public class DisplayArticle extends ActionBarActivity {
         Log.e("On create", "blarg");
         Intent intent = getIntent();
         String description = intent.getStringExtra("DESC");
+        link = intent.getStringExtra("LINK");
         TextView textView =(TextView) findViewById(R.id.textViewID);
         textView.setText(description);
 
@@ -41,6 +43,10 @@ public class DisplayArticle extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            startActivity(browserIntent);
+
             return true;
         }
 

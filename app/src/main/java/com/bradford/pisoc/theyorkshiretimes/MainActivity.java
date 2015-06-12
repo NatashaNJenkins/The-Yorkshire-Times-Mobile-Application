@@ -2,6 +2,7 @@ package com.bradford.pisoc.theyorkshiretimes;
 
 //import android.content.res.AssetManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -40,6 +41,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //TEST BROWSER
+        //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://google.com"));
+        //startActivity(browserIntent);
+
+
+
+
+
 
         //Getting a reference to our list view
         artList = (ListView) findViewById(R.id.article_list);
@@ -110,10 +119,10 @@ public class MainActivity extends ActionBarActivity {
                 Object  selected =  mAdapter.getItemAtPosition(position);
                 articleInf article = new articleInf();
                 article = (articleInf) selected;
-                String value = article.getDescription();
+                String description = article.getDescription();
+                String link = article.getLink();
+                goToArticle(description, link);
 
-                goToArticle(value);
-                Log.e("Article as .toString()", value);
             }
 
         });
@@ -164,9 +173,10 @@ public class MainActivity extends ActionBarActivity {
 
         ;}
 
-        public void goToArticle(String description){
+        public void goToArticle(String description, String link){
             Intent intent = new Intent(MainActivity.this, DisplayArticle.class);
             intent.putExtra("DESC",description);
+            intent.putExtra("LINK", link);
             startActivity(intent);
         }
     }
