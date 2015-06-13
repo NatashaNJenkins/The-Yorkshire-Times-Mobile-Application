@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 
 public class DisplayArticle extends ActionBarActivity {
 String link;
@@ -20,8 +22,10 @@ String link;
         Intent intent = getIntent();
         String description = intent.getStringExtra("DESC");
         link = intent.getStringExtra("LINK");
+        String title = intent.getStringExtra("TITLE");
         TextView textView =(TextView) findViewById(R.id.textViewID);
         textView.setText(description);
+
 
 
     }

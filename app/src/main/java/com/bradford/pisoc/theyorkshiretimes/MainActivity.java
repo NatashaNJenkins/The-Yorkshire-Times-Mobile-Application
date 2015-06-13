@@ -66,17 +66,19 @@ public class MainActivity extends ActionBarActivity {
             List<articleInf> articles = new ArrayList();
             articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
              articles = format(articles);
-            List<String> titles = new ArrayList();
-            mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
 
+            mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
             artList.setAdapter(mAdapter);
 
             Log.e("Articless", "adapter size = " + mAdapter.getCount());
             onSelection();
 
         } else {
+            List<articleInf> articles = new ArrayList();
+            articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+            articles = format(articles);
 
-            mAdapter = new ArticleAdapter(getApplicationContext(), -1, YTXmlPullParser.getArticlesFromFile(MainActivity.this));
+            mAdapter = new ArticleAdapter(getApplicationContext(), -1, articles);
             artList.setAdapter(mAdapter);
             onSelection();
         }
@@ -122,14 +124,12 @@ public class MainActivity extends ActionBarActivity {
                 article = (articleInf) selected;
                 String description = article.getDescription();
                 String link = article.getLink();
-                goToArticle(description, link);
+                String title = article.getTitle();
+                goToArticle(description, link, title);
 
             }
 
         });
-
-
-
 
 
     }
@@ -215,10 +215,11 @@ public class MainActivity extends ActionBarActivity {
 
         ;}
 
-        public void goToArticle(String description, String link){
+        public void goToArticle(String description, String link, String title){
             Intent intent = new Intent(MainActivity.this, DisplayArticle.class);
             intent.putExtra("DESC",description);
             intent.putExtra("LINK", link);
+            intent.putExtra("TITLE", title);
             startActivity(intent);
         }
     }
