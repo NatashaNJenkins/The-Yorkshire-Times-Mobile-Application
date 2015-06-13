@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.*;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -25,6 +26,32 @@ public class YTXmlPullParser {
     static final String KEY_DES = "description";
     static final String KEY_GUID = "guid";
     static final String KEY_AUTHOR = "author";
+
+    //This is the pattern that will retrieve the link
+    public static String imUrlPattern = " \"[A-z.0-9/:\\s&-]*JPG\"|\"[A-z.0-9/:\\s&-]*jpg\"|\"[A-z.0-9/:\\s&-]*jpeg\"|\"[A-z.0-9/:\\s&-]*JPEG\" ";
+
+    //Method findImageURL will find the url string for the image associated
+    //with the article found in the details tag or the rss feed.
+
+    public static String findImageURL(String des){
+
+        Pattern imgLink = Pattern.compile(imUrlPattern);
+
+        Matcher match = imgLink.matcher(des);
+
+        String Final = "";
+
+        while(match.find()){
+
+            Final = (des.substring(match.start(),match.end()));
+
+            return Final;
+
+        }
+
+        return Final;
+
+    }
 
 
     public static List<articleInf> getArticlesFromFile(Context ctx) {
@@ -93,6 +120,10 @@ public class YTXmlPullParser {
                         } else if (tagname.equalsIgnoreCase(KEY_DES)) {
 // if </description> use setDescription() on curArt
                             curArt.setDescription(curText);
+
+                            //we want to set our imageUrl variable here to using findImageURL()
+
+                            curArt.setImageUrl(findImageURL(curText));
 
                         } else if (tagname.equalsIgnoreCase(KEY_GUID)) {
 // if </guid> use setGuid() on curArt

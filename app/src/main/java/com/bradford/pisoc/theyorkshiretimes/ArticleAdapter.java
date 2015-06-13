@@ -21,13 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-//*Potential to be used for the image loading later on for image caching and loading*
-//    import com.nostra13.universalimageloader.core.DisplayImageOptions;
-//    import com.nostra13.universalimageloader.core.ImageLoader;
-//    import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-//    import com.nostra13.universalimageloader.core.assist.FailReason;
-//    import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+//import com.nostra13.universalimageloader.core.DisplayImageOptions;
+//import com.nostra13.universalimageloader.core.ImageLoader;
+//import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+//import com.nostra13.universalimageloader.core.assist.FailReason;
+//import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 
 
     /*
@@ -36,7 +34,6 @@ import android.widget.TextView;
     */
 
 public class ArticleAdapter extends ArrayAdapter<articleInf> {
-
 
     public ArticleAdapter(Context context, int resource, List<articleInf> articles) {
         super(context, resource, articles);

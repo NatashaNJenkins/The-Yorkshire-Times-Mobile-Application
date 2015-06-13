@@ -125,7 +125,9 @@ public class MainActivity extends ActionBarActivity {
                 String description = article.getDescription();
                 String link = article.getLink();
                 String title = article.getTitle();
-                goToArticle(description, link, title);
+                    //EXTRA IMAGE VARIABLE ADDED
+                    String image = article.getImageUrl();
+                goToArticle(description, link, title, image);
 
             }
 
@@ -215,11 +217,15 @@ public class MainActivity extends ActionBarActivity {
 
         ;}
 
-        public void goToArticle(String description, String link, String title){
+        public void goToArticle(String description, String link, String title, String image){
             Intent intent = new Intent(MainActivity.this, DisplayArticle.class);
             intent.putExtra("DESC",description);
             intent.putExtra("LINK", link);
             intent.putExtra("TITLE", title);
+
+                //EXTRA IMAGE VARIABLE ADDED
+                intent.putExtra("IMAGE",image);
+
             startActivity(intent);
         }
     }

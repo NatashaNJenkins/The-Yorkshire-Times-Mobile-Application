@@ -16,6 +16,7 @@ public class articleInf {
     private String description;
     private String guid;
     private String author;
+    private String imageUrl;
 
     public String getTitle() {
         return title;
@@ -69,5 +70,13 @@ public class articleInf {
     public String toString(){
         return title;
 
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
