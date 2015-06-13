@@ -23,6 +23,7 @@ import android.util.Log;
 //import android.widget.AdapterView.OnItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,8 +65,10 @@ public class MainActivity extends ActionBarActivity {
             download.execute();
             List<articleInf> articles = new ArrayList();
             articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
-           articles = formatDate(articles);
+             articles = format(articles);
+            List<String> titles = new ArrayList();
             mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
+
             artList.setAdapter(mAdapter);
 
             Log.e("Articless", "adapter size = " + mAdapter.getCount());
@@ -79,9 +82,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
     }
-    public interface OnCustomClickListener {
-        public void OnCustomClick(View aView, int position);
-    }
+
 
     //Helper method to determine if Internet connection is available.
     private boolean isNetworkAvailable() {
@@ -134,7 +135,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    public List<articleInf> formatDate(List<articleInf> articles){
+    public List<articleInf> format(List<articleInf> articles){
 
         String temp;
         for(int i = 0; i < articles.size();i++){
@@ -142,6 +143,47 @@ public class MainActivity extends ActionBarActivity {
             temp = temp.substring(0,16);
             articles.get(i).setPubDate(temp);
         }
+        for(int i = 0; i < articles.size(); i ++){
+            temp = articles.get(i).getDescription();
+
+            int index = 0;
+            String tempSub;
+            Boolean found = false;
+            while (!found && (index < temp.length()-1)){
+                tempSub = temp.substring(index, index + 2);
+                if (tempSub.matches(">[A-Z]|> ")){
+                    found = true;
+                }
+                else{
+                    index++;
+                }
+
+            }
+            if(found == false){
+                temp = "Description not found...";
+            }
+            else {
+                temp = temp.substring(index + 1, temp.length());
+            }
+            index = 0;
+            found = false;
+            while (!found && (index < temp.length()-1)){
+                tempSub = temp.substring(index, index + 3);
+                if (tempSub.matches("(\\.\\.\\.)")){
+                    found = true;
+                }
+                else{
+                    index++;
+                }
+
+            }
+            temp = temp.substring(0, index + 3);
+
+           articles.get(i).setDescription(temp);
+
+       }
+
+
         return articles;
     }
     private class articleDownloadTask extends AsyncTask<Void, Void, Void> {
