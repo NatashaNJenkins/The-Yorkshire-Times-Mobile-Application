@@ -64,4 +64,10 @@ public class articleInf {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    @Override
+    public String toString(){
+        return title;
+
+    }
 }
