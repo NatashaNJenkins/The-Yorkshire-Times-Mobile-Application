@@ -23,7 +23,7 @@ String link;
         String description = intent.getStringExtra("DESC");
         link = intent.getStringExtra("LINK");
         String title = intent.getStringExtra("TITLE");
-        String image = intent.getStringExtra("PIE");
+        String image = intent.getStringExtra("IMAGE");
 
         TextView textView =(TextView) findViewById(R.id.textViewID);
         textView.setText(description);
