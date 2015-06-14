@@ -28,7 +28,7 @@ public class YTXmlPullParser {
     static final String KEY_AUTHOR = "author";
 
     //This is the pattern that will retrieve the link
-    public static String imUrlPattern = " [A-z.0-9/:\\s&-]*JPG|[A-z.0-9/:\\s&-]*jpg|[A-z.0-9/:\\s&-]*jpeg|[A-z.0-9/:\\s&-]*JPEG ";
+    public static String imUrlPattern = "[A-z.,0-9/:)(\\s&-]*JPG|[A-z.,0-9/:)(\\s&-]*jpg|[A-z\\(.,0-9/:)(\\s&-]*png|[A-z.,0-9/:)(\\s&-]*PNG";
 
     //Method findImageURL will find the url string for the image associated
     //with the article found in the details tag or the rss feed.
