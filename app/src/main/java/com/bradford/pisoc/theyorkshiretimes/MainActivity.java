@@ -140,17 +140,28 @@ public class MainActivity extends ActionBarActivity {
     public List<articleInf> format(List<articleInf> articles){
 
         String temp;
+        //Iterates through articles and substrings the pubDates
         for(int i = 0; i < articles.size();i++){
             temp = articles.get(i).getPubDate();
             temp = temp.substring(0,16);
             articles.get(i).setPubDate(temp);
         }
+
+        for(int i = 0; i < articles.size(); i++){
+            temp = articles.get(i).getAuthor();
+            temp = temp.substring(27, temp.length());
+            articles.get(i).setAuthor(temp);
+
+
+        }
+        //Iterates through articles
         for(int i = 0; i < articles.size(); i ++){
             temp = articles.get(i).getDescription();
 
             int index = 0;
             String tempSub;
             Boolean found = false;
+            //Iterates through characters of description until the pattern is matched, or the length of the description is reached
             while (!found && (index < temp.length()-1)){
                 tempSub = temp.substring(index, index + 2);
                 if (tempSub.matches(">[A-Z]|> ")){
@@ -161,14 +172,17 @@ public class MainActivity extends ActionBarActivity {
                 }
 
             }
+            //If the pattern is not matched, set description
             if(found == false){
                 temp = "Description not found...";
             }
+            //Substrings using the position the pattern was matched previously
             else {
                 temp = temp.substring(index + 1, temp.length());
             }
             index = 0;
             found = false;
+            //Iterates through resulting string looking for '...'
             while (!found && (index < temp.length()-1)){
                 tempSub = temp.substring(index, index + 3);
                 if (tempSub.matches("(\\.\\.\\.)")){
@@ -179,6 +193,7 @@ public class MainActivity extends ActionBarActivity {
                 }
 
             }
+            //Cuts everything off following the '...'
             temp = temp.substring(0, index + 3);
 
            articles.get(i).setDescription(temp);
