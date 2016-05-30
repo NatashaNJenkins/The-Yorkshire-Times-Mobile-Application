@@ -17,7 +17,6 @@ public class articleInf {
     private String guid;
     private String author;
     private String imageUrl;
-
     public String getTitle() {
         return title;
     }

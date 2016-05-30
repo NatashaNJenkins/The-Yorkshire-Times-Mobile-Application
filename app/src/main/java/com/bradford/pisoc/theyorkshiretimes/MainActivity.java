@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
 
         //Getting a reference to our list view
         artList = (ListView) findViewById(R.id.article_list);
-        Log.e("Articless", "OnCreate");
+
 
         //We test the availability of network, if it exists we download the file
         //if not we search to see if there is a file saved previously
@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
         if (isNetworkAvailable()) {
 
 
-            Log.i("Articles", "starting download Task");
+
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
             List<articleInf> articles = new ArrayList();
@@ -78,12 +78,12 @@ public class MainActivity extends ActionBarActivity {
             //Scraping the links from the homepage source
            DownloadHTML dl = new DownloadHTML();
             dl.execute();
-            Log.e("Articless", "links: " + links);
+
 
             mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
             artList.setAdapter(mAdapter);
 
-            Log.e("Articless", "adapter size = " + mAdapter.getCount());
+
             onSelection();
 
         } else {
@@ -106,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
         HtmlParser parser = new HtmlParser();
         links = parser.scrape("http://www.yorkshiretimes.co.uk");
         String test = parser.scrape("http://www.yorkshiretimes.co.uk");
-        Log.e("Articless", "links: " + test);
+
     }
 
 
@@ -287,7 +287,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... arg0) {
             //Download the file
-            Log.e("Articless", "doInBackground");
+
 
 
             //make new instance of downloader
