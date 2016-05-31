@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
 
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
-            List<articleInf> articles = new ArrayList();
+            List<ArticleInf> articles = new ArrayList();
             articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
             //Scraping the links from the homepage source
@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
             onSelection();
 
         } else {
-            List<articleInf> articles = new ArrayList();
+            List<ArticleInf> articles = new ArrayList();
             articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
 
@@ -144,14 +144,14 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> mAdapter, View view, int position, long arg3) {
 
                 Object selected = mAdapter.getItemAtPosition(position);
-                articleInf article = new articleInf();
-                article = (articleInf) selected;
+                ArticleInf article = new ArticleInf();
+                article = (ArticleInf) selected;
                 String description = article.getDescription();
                 String link = article.getLink();
                 String title = article.getTitle();
                 //EXTRA IMAGE VARIABLE ADDED
                 String image = article.getImageUrl();
-                goToArticle(description, link, title, image);
+                goToArticle(description, link, title, image, article);
 
             }
 
@@ -161,7 +161,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    public List<articleInf> format(List<articleInf> articles) {
+    public List<ArticleInf> format(List<ArticleInf> articles) {
 
         String temp;
         //Iterates through articles and substrings the pubDates
@@ -298,7 +298,6 @@ public class MainActivity extends ActionBarActivity {
 
             return null;
 
-
         }
 
 
@@ -312,14 +311,20 @@ public class MainActivity extends ActionBarActivity {
         ;
     }
 
-    public void goToArticle(String description, String link, String title, String image) {
+    public void goToArticle(String description, String link, String title, String image, ArticleInf article) {
         Intent intent = new Intent(MainActivity.this, DisplayArticle.class);
+        intent.putExtra("SEEN",article.isSeen());
         intent.putExtra("DESC", description);
         intent.putExtra("LINK", link);
         intent.putExtra("TITLE", title);
-
         //EXTRA IMAGE VARIABLE ADDED
         intent.putExtra("IMAGE", image);
+        if(article.isSeen())
+            intent.putExtra("TEXT",article.getArticleText());
+        else {
+            intent.putExtra("TEXT", "default");
+        }
+        article.setSeen();
 
         startActivity(intent);
     }

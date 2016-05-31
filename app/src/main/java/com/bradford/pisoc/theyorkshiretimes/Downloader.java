@@ -75,7 +75,7 @@ public class Downloader {
 
 
             //The following loop means that we retrieve only the essencial from the rss feed
-            // i.e only the bits that will be used to form articleInf objects. (Basically cuts off
+            // i.e only the bits that will be used to form ArticleInf objects. (Basically cuts off
             // the unneeded beginning and end to the rss feed)
             while ((inputLine = in.readLine()) != null) {
 

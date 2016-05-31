@@ -3,10 +3,10 @@ package com.bradford.pisoc.theyorkshiretimes;
 /**
  * Created by charmstrange on 27/05/15.
  * <p/>
- * Class to hold articleInf objects containing all the in data in the rss stream for particular
+ * Class to hold ArticleInf objects containing all the in data in the rss stream for particular
  * article
  */
-public class articleInf {
+public class ArticleInf {
 
     //Simple article class to set and get the variables when parsing and displaying respectively
 
@@ -17,6 +17,12 @@ public class articleInf {
     private String guid;
     private String author;
     private String imageUrl;
+    private String articleText;
+    private  boolean seen;
+
+    public  ArticleInf(){
+        seen = false;
+    }
     public String getTitle() {
         return title;
     }
@@ -24,6 +30,8 @@ public class articleInf {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setSeen(){seen = true;}
 
     public String getLink() {
         return link;
@@ -65,6 +73,10 @@ public class articleInf {
         this.author = author;
     }
 
+    public void setArticleText(String text){articleText = text;}
+
+    public String getArticleText(){return  articleText;}
+
     @Override
     public String toString(){
         return title;
@@ -74,6 +86,8 @@ public class articleInf {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    public boolean isSeen(){return seen;}
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;

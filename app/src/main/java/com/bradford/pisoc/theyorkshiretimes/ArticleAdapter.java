@@ -34,7 +34,7 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
     * get parsed out of XML and building row views to display them on the screen.
     */
 
-public class ArticleAdapter extends ArrayAdapter<articleInf> {
+public class ArticleAdapter extends ArrayAdapter<ArticleInf> {
 
     ImageLoader imageLoader;
 
@@ -42,7 +42,7 @@ public class ArticleAdapter extends ArrayAdapter<articleInf> {
     DisplayImageOptions options;
 
 
-    public ArticleAdapter(Context context, int resource, List<articleInf> articles) {
+    public ArticleAdapter(Context context, int resource, List<ArticleInf> articles) {
         super(context, resource, articles);
 
         //We want to set up our image loader for displaying the images
@@ -62,7 +62,7 @@ public class ArticleAdapter extends ArrayAdapter<articleInf> {
         * (non-Javadoc)
         * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
         *
-        * This method is responsible for creating row views out of a articleInf object that can be put
+        * This method is responsible for creating row views out of a ArticleInf object that can be put
         * into our ListView -> basically where we populate each row view
         */
 

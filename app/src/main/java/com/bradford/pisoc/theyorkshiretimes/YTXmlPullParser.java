@@ -54,12 +54,12 @@ public class YTXmlPullParser {
     }
 
 
-    public static List<articleInf> getArticlesFromFile(Context ctx) {
+    public static List<ArticleInf> getArticlesFromFile(Context ctx) {
 // List of Articles that we will return
-        List<articleInf> Articles;
-        Articles = new ArrayList<articleInf>();
+        List<ArticleInf> Articles;
+        Articles = new ArrayList<ArticleInf>();
 // temp holder for current article while parsing
-        articleInf curArt = null;
+        ArticleInf curArt = null;
 // temp holder for current text value while parsing
         String curText = "";
         try {
@@ -94,9 +94,9 @@ public class YTXmlPullParser {
                         if (tagname.equalsIgnoreCase(KEY_ITEM)) {
 
 // If we are starting a new <item> block we need
-//a new articleInf object to represent it
+//a new ArticleInf object to represent it
 
-                            curArt = new articleInf();
+                            curArt = new ArticleInf();
                         }
                         break;
                     case XmlPullParser.TEXT:
