@@ -72,7 +72,7 @@ public class YTXmlPullParser {
 
 // point the parser to our file.
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream((ctx.getFilesDir().getPath().toString() + "/Articles.xml"))));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream((ctx.getFilesDir().getPath() + "/Articles.xml"))));
             xpp.setInput(reader);
 
 // get initial eventType

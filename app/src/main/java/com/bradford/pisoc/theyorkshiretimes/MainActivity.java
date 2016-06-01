@@ -39,14 +39,10 @@ import java.util.List;
 //import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
-    String EXTRA_MESSAGE;
-    private ListView artList;
-    private ArticleAdapter mAdapter;
-    private String links;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    ListView artList;
+    ArticleAdapter mAdapter;
+    //private String links;
+
     private GoogleApiClient client;
 
 
@@ -72,14 +68,9 @@ public class MainActivity extends ActionBarActivity {
 
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
-            List<ArticleInf> articles = new ArrayList();
-            articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+            List<ArticleInf>  articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
             //Scraping the links from the homepage source
-           DownloadHTML dl = new DownloadHTML();
-            dl.execute();
-
-
             mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
             artList.setAdapter(mAdapter);
 
@@ -87,8 +78,7 @@ public class MainActivity extends ActionBarActivity {
             onSelection();
 
         } else {
-            List<ArticleInf> articles = new ArrayList();
-            articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+            List<ArticleInf>  articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
 
             mAdapter = new ArticleAdapter(getApplicationContext(), -1, articles);
@@ -101,13 +91,7 @@ public class MainActivity extends ActionBarActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    public void getLinks() throws IOException, NetworkOnMainThreadException {
 
-        HtmlParser parser = new HtmlParser();
-        links = parser.scrape("http://www.yorkshiretimes.co.uk");
-        String test = parser.scrape("http://www.yorkshiretimes.co.uk");
-
-    }
 
 
     //Helper method to determine if Internet connection is available.
@@ -144,8 +128,7 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> mAdapter, View view, int position, long arg3) {
 
                 Object selected = mAdapter.getItemAtPosition(position);
-                ArticleInf article = new ArticleInf();
-                article = (ArticleInf) selected;
+                ArticleInf article = (ArticleInf) selected;
                 String description = article.getDescription();
                 String link = article.getLink();
                 String title = article.getTitle();
@@ -196,7 +179,7 @@ public class MainActivity extends ActionBarActivity {
 
             }
             //If the pattern is not matched, set description
-            if (found == false) {
+            if (!found) {
                 temp = "Description not found...";
             }
             //Substrings using the position the pattern was matched previously
@@ -266,21 +249,6 @@ public class MainActivity extends ActionBarActivity {
         client.disconnect();
     }
 
-    private class DownloadHTML extends AsyncTask<Void, Void, Void> {
-
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try{
-                getLinks();
-            }
-           catch (IOException e){
-               e.printStackTrace();
-           }
-            return  null;
-        }
-
-        }
 
         private class articleDownloadTask extends AsyncTask<Void, Void, Void> {
 
@@ -293,7 +261,7 @@ public class MainActivity extends ActionBarActivity {
             //make new instance of downloader
             //make sure you have the entire path name
 
-            Downloader.DownloadFromUrl("http://www.yorkshiretimes.co.uk/rss", MainActivity.this.getFilesDir().getPath().toString() + "/Articles.xml");
+            Downloader.DownloadFromUrl("http://www.yorkshiretimes.co.uk/rss", "/Articles.xml");
 
 
             return null;
@@ -308,7 +276,7 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
-        ;
+
     }
 
     public void goToArticle(String description, String link, String title, String image, ArticleInf article) {
