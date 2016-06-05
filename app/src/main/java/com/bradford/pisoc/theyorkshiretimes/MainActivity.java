@@ -1,50 +1,32 @@
 package com.bradford.pisoc.theyorkshiretimes;
 
-//import android.content.res.AssetManager;
 import android.content.Intent;
-import android.net.Uri;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
-//import android.view.MenuItem;
 import android.view.View;
-//import android.app.Activity;
 import android.content.Context;
-//import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-//import android.net.Uri;
-//import android.os.AsyncTask;
-//import android.os.Bundle;
 import android.util.Log;
-//import android.view.View;
-//import android.widget.AdapterView;
-//import android.widget.AdapterView.OnItemClickListener;
-import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-//import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
     ListView artList;
     ArticleAdapter mAdapter;
     //private String links;
-
-    private GoogleApiClient client;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,42 +39,33 @@ public class MainActivity extends ActionBarActivity {
 
         //Getting a reference to our list view
         artList = (ListView) findViewById(R.id.article_list);
+        if(!doesDatabaseExist(MainActivity.this, ArticleDB.FeedEntry.TABLE_NAME)){
+            Log.e("ERROR", "This should not be reached");
+            initialiseDB();
 
+        }
 
         //We test the availability of network, if it exists we download the file
         //if not we search to see if there is a file saved previously
 
         if (isNetworkAvailable()) {
-
-
-
             articleDownloadTask download = new articleDownloadTask();
             download.execute();
-            List<ArticleInf>  articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+            List<ArticleInf> articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
             //Scraping the links from the homepage source
             mAdapter = new ArticleAdapter(MainActivity.this, -1, articles);
             artList.setAdapter(mAdapter);
-
-
             onSelection();
-
         } else {
-            List<ArticleInf>  articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
+            List<ArticleInf> articles = YTXmlPullParser.getArticlesFromFile(MainActivity.this);
             articles = format(articles);
 
             mAdapter = new ArticleAdapter(getApplicationContext(), -1, articles);
             artList.setAdapter(mAdapter);
             onSelection();
         }
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-
-
 
     //Helper method to determine if Internet connection is available.
     private boolean isNetworkAvailable() {
@@ -109,20 +82,6 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-
-//  *Optional override stated in the tutorial not sure if this is needed, may be useful later on(look it up at some point)*
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//       //
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     public void onSelection() {
         artList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> mAdapter, View view, int position, long arg3) {
@@ -134,15 +93,47 @@ public class MainActivity extends ActionBarActivity {
                 String title = article.getTitle();
                 //EXTRA IMAGE VARIABLE ADDED
                 String image = article.getImageUrl();
-                goToArticle(description, link, title, image, article);
+                String pubDate = article.getPubDate();
+                String author = article.getAuthor();
+                String guide = article.getGuid();
+
+                if (articleExists(title)) {
+                    goToArticle(link);
+                }
+                goToArticle(description, link, title, image, article, pubDate, author, guide);
+
 
             }
 
         });
+    }
 
+
+    public boolean articleExists(String title) {
+        DBOperations dbop = new DBOperations(MainActivity.this);
+        SQLiteDatabase sqldb = dbop.getReadableDatabase();
+        String Query = "Select * from " + ArticleDB.FeedEntry.TABLE_NAME + " where " + ArticleDB.FeedEntry.COLUMN_NAME_TITLE+ " = " + "\"" + title + "\"" ;
+        Cursor cursor = sqldb.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    public void initialiseDB()
+    {
+        DBOperations dbop = new DBOperations(MainActivity.this);
+        SQLiteDatabase db = dbop.getWritableDatabase();
+        dbop.onCreate(db);
 
     }
 
+    private static boolean doesDatabaseExist(Context context, String dbName) {
+        File dbFile = context.getDatabasePath(dbName);
+        return dbFile.exists();
+    }
 
     public List<ArticleInf> format(List<ArticleInf> articles) {
 
@@ -158,8 +149,6 @@ public class MainActivity extends ActionBarActivity {
             temp = articles.get(i).getAuthor();
             temp = temp.substring(27, temp.length());
             articles.get(i).setAuthor(temp);
-
-
         }
         //Iterates through articles
         for (int i = 0; i < articles.size(); i++) {
@@ -202,72 +191,26 @@ public class MainActivity extends ActionBarActivity {
             temp = temp.substring(0, index + 3);
 
             articles.get(i).setDescription(temp);
-
         }
-
-
         return articles;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.bradford.pisoc.theyorkshiretimes/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.bradford.pisoc.theyorkshiretimes/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 
 
-        private class articleDownloadTask extends AsyncTask<Void, Void, Void> {
+    private class articleDownloadTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... arg0) {
             //Download the file
-
-
-
             //make new instance of downloader
             //make sure you have the entire path name
-
             Downloader.DownloadFromUrl("http://www.yorkshiretimes.co.uk/rss", "/Articles.xml");
-
-
             return null;
-
         }
-
 
         @Override
         protected void onPostExecute(Void result) {
@@ -275,27 +218,50 @@ public class MainActivity extends ActionBarActivity {
             //setup our Adapter and set it to the ListView.
 
         }
-
-
     }
 
-    public void goToArticle(String description, String link, String title, String image, ArticleInf article) {
+    /* This method is only ran if an article is accessed for the first time */
+
+    public void goToArticle(String description, String link, String title, String image, ArticleInf article, String pubDate, String author, String guide) {
         Intent intent = new Intent(MainActivity.this, DisplayArticle.class);
-        intent.putExtra("SEEN",article.isSeen());
-        intent.putExtra("DESC", description);
-        intent.putExtra("LINK", link);
         intent.putExtra("TITLE", title);
         //EXTRA IMAGE VARIABLE ADDED
         intent.putExtra("IMAGE", image);
-        if(article.isSeen())
-            intent.putExtra("TEXT",article.getArticleText());
-        else {
-            intent.putExtra("TEXT", "default");
-        }
-        article.setSeen();
+        intent.putExtra("LINK",link);
+        intent.putExtra("TEXT","default");
+            startActivity(intent);
 
-        startActivity(intent);
     }
 
+    public String getArticle(String link) throws IOException, NetworkOnMainThreadException {
+        Document doc = Jsoup.connect(link).maxBodySize(0).get();
+        Element text = doc.select("div.articlebody").first();
+        Log.e("pls work", text.toString());
+        return format(text.toString());
+    }
+
+    public String format(String input) {
+        String onlyBr = input.replaceAll("<html>|<div.*|<body>|<img.*|</div.*|<head.*|", "");
+        Log.e("output:1", onlyBr);
+        return onlyBr;
+    }
+
+    /* This method is ran if an article is returned to */
+    public void goToArticle(String link) {
+        DBOperations dbop = new DBOperations(MainActivity.this);
+        SQLiteDatabase sqldb = dbop.getReadableDatabase();
+        String Query = "Select * from " + ArticleDB.FeedEntry.TABLE_NAME + " where " + ArticleDB.FeedEntry.COLUMN_NAME_LINK + " = " + link;
+        Cursor cursor = sqldb.rawQuery(Query, null);
+        int i = cursor.getColumnIndex(ArticleDB.FeedEntry.COLUMN_NAME_TEXT);
+        String article = cursor.getString(i);
+        cursor.close();
+        Intent intent = new Intent(MainActivity.this,DisplayArticle.class);
+        intent.putExtra("ARTICLE",article);
+    }
 }
 
+    /*public void initialiseDB{
+        ArticleDB.FeedEntry fe = new ArticleDB.FeedEntry() {
+            SQLiteDatabase myDB = openOrCreateDatabase(TABLE_NAME,MODE_PRIVATE,null);
+            myDb.execSQL("dd");
+            */

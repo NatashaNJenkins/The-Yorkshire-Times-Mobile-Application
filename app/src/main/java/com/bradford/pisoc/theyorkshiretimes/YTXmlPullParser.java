@@ -6,7 +6,6 @@ package com.bradford.pisoc.theyorkshiretimes;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class YTXmlPullParser {
     static final String KEY_AUTHOR = "author";
 
     //This is the pattern that will retrieve the link
-    public static String imUrlPattern = "[A-z.,0-9/:)(\\s&-]*JPG|[A-z.,0-9/:)(\\s&-]*jpg|[A-z\\(.,0-9/:)(\\s&-]*png|[A-z.,0-9/:)(\\s&-]*PNG";
+    public static String imUrlPattern = "[A-z.,0-9/:)(\\s&-]*JPG|[A-z.,0-9/:)(\\s&-]*jpg|[A-z\\(.,0-9/:)\\s&-]*png|[A-z.,0-9/:)(\\s&-]*PNG";
 
     //Method findImageURL will find the url string for the image associated
     //with the article found in the details tag or the rss feed.
@@ -41,7 +40,7 @@ public class YTXmlPullParser {
 
         String Final = "";
 
-        while(match.find()){
+        if(match.find()){
 
             Final = (des.substring(match.start(),match.end()));
 
@@ -56,8 +55,8 @@ public class YTXmlPullParser {
 
     public static List<ArticleInf> getArticlesFromFile(Context ctx) {
 // List of Articles that we will return
-        List<ArticleInf> Articles;
-        Articles = new ArrayList<ArticleInf>();
+
+        List<ArticleInf> articles = new ArrayList<>();
 // temp holder for current article while parsing
         ArticleInf curArt = null;
 // temp holder for current text value while parsing
@@ -107,7 +106,7 @@ public class YTXmlPullParser {
                         if (tagname.equalsIgnoreCase(KEY_ITEM)) {
 // if </item> then we are done with current article
 // add it to the list.
-                            Articles.add(curArt);
+                            articles.add(curArt);
                         } else if (tagname.equalsIgnoreCase(KEY_TITLE)) {
 // if </title> use setTitle() on curArt
                             curArt.setTitle(curText);
@@ -143,7 +142,7 @@ public class YTXmlPullParser {
             e.printStackTrace();
         }
 // return the populated list.
-        return Articles;
+        return articles;
 
 
     }

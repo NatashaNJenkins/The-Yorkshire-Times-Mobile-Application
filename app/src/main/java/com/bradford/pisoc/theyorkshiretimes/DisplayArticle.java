@@ -44,7 +44,6 @@ String link;
         setContentView(R.layout.activity_display_article);
 
         Intent intent = getIntent();
-        String description = intent.getStringExtra("DESC");
         link = intent.getStringExtra("LINK");
         String title = intent.getStringExtra("TITLE");
         String image = intent.getStringExtra("IMAGE");
@@ -54,7 +53,6 @@ String link;
             textView.setText(intentArticle);
         }
         else{
-            String article = "";
           Thread thread = new Thread(){
                 @Override
                 public void run() {
@@ -73,12 +71,10 @@ String link;
 
                 }
                 public String getArticle() throws IOException, NetworkOnMainThreadException {
-                    String html = Jsoup.connect(link).maxBodySize(0).get().html();
                     Document doc = Jsoup.connect(link).maxBodySize(0).get();
                     Element text = doc.select("div.articlebody").first();
                     Log.e("pls work", text.toString());
-                    String output = format(text.toString());
-                    return output;
+                    return format(text.toString());
                 }
 
             };
@@ -91,9 +87,6 @@ String link;
     public String format(String input){
         String onlyBr = input.replaceAll("<html>|<div.*|<body>|<img.*|<\\/div.*|<head.*|","");
         Log.e("output:1", onlyBr);
-        //String output = onlyBr.replaceAll("<br>","");
-        //Log.e("output:2", output);
-       // Log.e("raw", input);
         return  onlyBr;
     }
 
